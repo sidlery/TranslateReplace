@@ -14,12 +14,13 @@ foreach($r in $csvImport)
 Get-Content -Path $original_file | ForEach-Object {
     $line = $_
     $HashTable.GetEnumerator() | ForEach-Object {
-        $pattern = "(\\[abcdABCD]{1})"+"("+$_.Key+"{1})"       
+        $pattern = "(?<code>\\[abcdABCD]{1})"+"(?<key>"+$_.Key+"{1})"       
         #es ist ein translate code und nichts anderes.
         if ($line -match $pattern)             
-            
+  
             {
-                $line = $line -replace $_.Key , $_.Value  
+                $line = $line -replace "($matches.code.ToString()$matches.key.ToString())","($matches.code.ToString()$_.Value.ToString())"
+                Write-Host $matches.code.ToString()$_.Value.ToString()
             }
     }
    $line
